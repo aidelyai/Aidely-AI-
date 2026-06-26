@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>Aidely | AI for Local Business</title>
+  <link rel="manifest" href="data:application/manifest+json,%7B%22name%22%3A%22Aidely%22%2C%22short_name%22%3A%22Aidely%22%2C%22start_url%22%3A%22.%2F%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%23ffffff%22%2C%22theme_color%22%3A%22%231e293b%22%2C%22icons%22%3A%5B%7B%22src%22%3A%22https%3A%2F%2Fcdn-icons-png.flaticon.com%2F512%2F4616%2F4616735.png%22%2C%22sizes%22%3A%22512x512%22%2C%22type%22%3A%22image%2Fpng%22%7D%5D%7D">
+  <meta name="theme-color" content="#1e293b">
+  <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/4616/4616735.png">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800&family=Inter:wght@300;400;500;600;700;800;900&family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #1e293b; --primary-light: #334155; --accent: #3b82f6; --accent-light: #60a5fa;
+      --bg: #f8fafc; --surface: #ffffff; --text: #0f172a; --text-muted: #64748b;
+      --border: #e2e8f0; --shadow-sm: 0 1px 3px rgba(0,0,0,0.06); --shadow-md: 0 10px 25px rgba(0,0,0,0.08);
+      --radius: 22px; --radius-sm: 14px; --transition: all 0.3s ease;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', 'Noto Sans KR', sans-serif; background: #e2e8f0; color: var(--text); line-height: 1.5; overflow-x: hidden; -webkit-tap-highlight-color: transparent; }
+    .app-container { max-width: 480px; margin: auto; background: var(--surface); min-height: 100vh; position: relative; box-shadow: 0 0 60px rgba(0,0,0,0.15); }
+    .install-banner { background: #0f172a; color: #fff; padding: 14px 20px; display: none; align-items: center; justify-content: space-between; font-size: 0.8rem; font-weight: 600; position: sticky; top: 0; z-index: 300; cursor: pointer; }
+    .install-banner button { background: var(--accent); border: none; color: #fff; padding: 10px 20px; border-radius: 30px; font-weight: 700; font-size: 0.75rem; }
+    nav { display: flex; justify-content: space-between; align-items: center; padding: 16px 22px; background: rgba(255,255,255,0.9); backdrop-filter: blur(25px); position: sticky; top: 0; z-index: 200; border-bottom: 1px solid var(--border); }
+    .logo { font-family: 'Orbitron', sans-serif; font-weight: 800; font-size: 1.6rem; color: var(--primary); }
+    .lang-toggle { background: #f1f5f9; border-radius: 40px; padding: 4px; display: flex; gap: 4px; }
+    .lang-btn { padding: 8px 18px; border: none; border-radius: 40px; font-weight: 600; font-size: 0.7rem; cursor: pointer; background: transparent; color: var(--text-muted); }
+    .lang-btn.active { background: var(--primary); color: #fff; }
+    .bottom-nav { position: sticky; bottom: 0; background: rgba(255,255,255,0.95); backdrop-filter: blur(25px); border-top: 1px solid var(--border); display: flex; justify-content: space-around; padding: 10px 0 15px; z-index: 200; }
+    .bottom-nav-item { display: flex; flex-direction: column; align-items: center; font-size: 0.6rem; color: var(--text-muted); padding: 6px 14px; border-radius: 20px; cursor: pointer; }
+    .bottom-nav-item i { font-size: 1.3rem; margin-bottom: 3px; }
+    .bottom-nav-item.active { color: var(--accent); font-weight: 700; background: #eff6ff; }
+    .page { display: none; padding: 22px 20px; }
+    .page.active { display: block; }
+    .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px 20px; margin-bottom: 18px; box-shadow: var(--shadow-sm); }
+    .btn { padding: 16px 24px; border-radius: 50px; font-weight: 700; font-size: 0.85rem; cursor: pointer; border: none; text-align: center; display: block; width: 100%; }
+    .btn-accent { background: var(--accent); color: #fff; }
+    .btn-outline { background: transparent; border: 2px solid var(--primary); color: var(--primary); }
+    input, select, textarea { width: 100%; padding: 15px 18px; border: 2px solid var(--border); border-radius: var(--radius-sm); margin-bottom: 14px; background: #f8fafc; font-size: 0.85rem; }
+    input:focus, select:focus, textarea:focus { border-color: var(--accent); outline: none; }
+    .img-banner { width: 100%; border-radius: var(--radius); margin: 18px 0; border: 1px solid var(--border); object-fit: cover; height: 190px; }
+    .pricing-card { border: 2px solid var(--border); border-radius: var(--radius); padding: 28px 22px; text-align: center; margin-bottom: 16px; }
+    .pricing-card.recommended { border-color: var(--accent); }
+    .badge { background: var(--accent); color: #fff; padding: 6px 20px; border-radius: 30px; font-size: 0.65rem; font-weight: 800; display: inline-block; margin-bottom: 12px; }
+    .step { display: flex; gap: 16px; margin-bottom: 18px; }
+    .step-num { background: var(--accent); color: #fff; width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; flex-shrink: 0; }
+    footer { text-align: center; padding: 30px 20px; font-size: 0.65rem; color: var(--text-muted); border-top: 1px solid var(--border); }
+  </style>
+</head>
+<body>
+<div class="app-container">
+  <div class="install-banner" id="installBanner"><span>📲 Install App — Use like a real app!</span><button>Install</button></div>
+  <nav>
+    <div class="logo">Aidely</div>
+    <div class="lang-toggle">
+      <button class="lang-btn active" onclick="window.setLang('en')">EN</button>
+      <button class="lang-btn" onclick="window.setLang('kr')">한국어</button>
+    </div>
+  </nav>
+
+  <!-- HOME -->
+  <div class="page active" id="page-home">
+    <h1 style="font-size:2rem;font-weight:800;" data-en="Smart AI for Local Business" data-kr="로컬 비즈니스를 위한 스마트 AI">Smart AI for Local Business</h1>
+    <p style="color:var(--text-muted);margin-bottom:20px;" data-en="Get more reviews, automate social media, and respond to customers instantly." data-kr="더 많은 리뷰를 받고 SNS를 자동화하며 고객에게 즉시 응답하세요.">Get more reviews, automate social media, and respond to customers instantly.</p>
+    <img class="img-banner" src="https://images.unsplash.com/photo-1552664730-d307ca884978?w=500&q=80" alt="AI">
+    <div class="card" style="text-align:center;"><h3 data-en="🎁 First 5 – 1 Month Free | Then 3-Day Trial" data-kr="🎁 선착순 5명 – 1개월 무료 | 그 후 3일 체험">🎁 First 5 – 1 Month Free | Then 3-Day Trial</h3><p style="color:var(--text-muted);" data-en="No credit card. Just 2 social posts/week about us." data-kr="신용카드 불필요. 주 2회 소셜 포스트.">No credit card. Just 2 social posts/week.</p></div>
+    <button class="btn btn-accent" onclick="window.navigateTo('signup')" data-en="Start Free Trial →" data-kr="무료 체험 시작 →">Start Free Trial →</button>
+    <p style="text-align:center;margin-top:20px;" data-en="Already have an account?" data-kr="이미 계정이 있으신가요?">Already have an account? <a href="#" onclick="window.navigateTo('login')" style="color:var(--accent);" data-en="Login" data-kr="로그인">Login</a></p>
+  </div>
+
+  <!-- SIGNUP -->
+  <div class="page" id="page-signup">
+    <h2 data-en="Create Account" data-kr="계정 만들기">Create Account</h2>
+    <img class="img-banner" src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=500&q=80" alt="Team">
+    <div class="card">
+      <input type="email" id="signupEmail" placeholder="Email / 이메일">
+      <input type="password" id="signupPassword" placeholder="Password / 비밀번호">
+      <button class="btn btn-accent" onclick="window.signupUser()" data-en="Sign Up" data-kr="가입하기">Sign Up</button>
+      <p style="text-align:center;margin-top:16px;" data-en="Have an account?" data-kr="계정이 있으신가요?">Have an account? <a href="#" onclick="window.navigateTo('login')" style="color:var(--accent);" data-en="Login" data-kr="로그인">Login</a></p>
+    </div>
+  </div>
+
+  <!-- LOGIN -->
+  <div class="page" id="page-login">
+    <h2 data-en="Login to Aidely" data-kr="Aidely 로그인">Login to Aidely</h2>
+    <img class="img-banner" src="https://images.unsplash.com/photo-1555421689-491a97ff2040?w=500&q=80" alt="Security">
+    <div class="card">
+      <input type="email" id="loginEmail" placeholder="Email / 이메일">
+      <input type="password" id="loginPassword" placeholder="Password / 비밀번호">
+      <button class="btn btn-accent" onclick="window.loginUser()" data-en="Login" data-kr="로그인">Login</button>
+      <p style="text-align:center;margin-top:16px;" data-en="No account?" data-kr="계정이 없으신가요?">No account? <a href="#" onclick="window.navigateTo('signup')" style="color:var(--accent);" data-en="Sign Up" data-kr="가입하기">Sign Up</a></p>
+    </div>
+  </div>
+
+  <!-- BUSINESS REGISTRATION -->
+  <div class="page" id="page-register">
+    <h2 data-en="Register Your Business" data-kr="비즈니스 등록">Register Your Business</h2>
+    <img class="img-banner" src="https://images.unsplash.com/photo-1556761175-b413da4baf72?w=500&q=80" alt="Register">
+    <div class="card">
+      <input type="text" id="bizName" placeholder="Business Name / 사업체명">
+      <input type="email" id="bizEmail" placeholder="Business Email / 비즈니스 이메일">
+      <select id="bizType"><option value="">Business Type / 업종</option><option value="restaurant">Restaurant / 식당</option><option value="cafe">Cafe / 카페</option><option value="bakery">Bakery / 베이커리</option><option value="clinic">Clinic / 병원</option><option value="salon">Salon / 미용실</option><option value="other">Other / 기타</option></select>
+      <input type="tel" id="bizPhone" placeholder="Phone / 전화번호">
+      <input type="text" id="bizLocation" placeholder="Location / Google Maps Link / 위치">
+      <input type="text" id="bizDesc" placeholder="Short Description / 간단한 설명">
+      <input type="text" id="bizInstagram" placeholder="Instagram Account (optional)">
+      <input type="text" id="bizFacebook" placeholder="Facebook Page (optional)">
+      <input type="text" id="bizNaver" placeholder="Naver Blog (optional)">
+      <button class="btn btn-accent" onclick="window.registerBusiness()" data-en="Register Business" data-kr="비즈니스 등록">Register Business</button>
+    </div>
+  </div>
+
+  <!-- DASHBOARD -->
+  <div class="page" id="page-dashboard">
+    <h2 data-en="Dashboard" data-kr="대시보드">Dashboard</h2>
+    <img class="img-banner" src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=500&q=80" alt="Analytics">
+    <div class="card"><p id="userEmailDisplay">📊 Welcome!</p></div>
+    <div class="card" id="bizInfoCard" style="display:none;"><p id="bizNameDisplay"></p><p id="bizPlanDisplay"></p><p id="trialDisplay"></p></div>
+    <div class="card" id="registerPrompt"><p data-en="⚠️ Please register your business first." data-kr="⚠️ 먼저 비즈니스를 등록하세요.">⚠️ Please register your business first.</p><button class="btn btn-accent" onclick="window.navigateTo('register')" data-en="Register Now" data-kr="지금 등록">Register Now</button></div>
+    <div id="bizServices" style="display:none;">
+      <div class="card" onclick="window.navigateTo('reviews')" style="cursor:pointer;">⭐ <span data-en="AI Review Replies" data-kr="AI 리뷰 답변">AI Review Replies</span></div>
+      <div class="card" onclick="window.navigateTo('social')" style="cursor:pointer;">📸 <span data-en="AI Social Posts" data-kr="AI SNS 포스트">AI Social Posts</span></div>
+      <div class="card" onclick="window.navigateTo('chat')" style="cursor:pointer;">💬 <span data-en="AI Chat Auto-Reply" data-kr="AI 채팅 자동응답">AI Chat Auto-Reply</span></div>
+    </div>
+    <button class="btn btn-outline" onclick="window.logoutUser()" style="margin-top:12px;" data-en="Logout" data-kr="로그아웃">Logout</button>
+  </div>
+
+  <!-- SERVICES -->
+  <div class="page" id="page-reviews"><h2 data-en="⭐ AI Review Replies" data-kr="⭐ AI 리뷰 답변">⭐ AI Review Replies</h2><img class="img-banner" src="https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=500&q=80" alt="Review"><textarea rows="3" id="reviewInput" placeholder="Paste review..."></textarea><button class="btn btn-accent" onclick="window.generateAI('review')" data-en="Generate AI Reply" data-kr="AI 답변 생성">Generate AI Reply</button><div id="reviewOutput" class="card" style="margin-top:12px;display:none;"></div></div>
+  <div class="page" id="page-social"><h2 data-en="📸 AI Social Posts" data-kr="📸 AI SNS 포스트">📸 AI Social Posts</h2><img class="img-banner" src="https://images.unsplash.com/photo-1611162617474-5b21e879e113?w=500&q=80" alt="Social"><select id="socialPlatform"><option>Instagram</option><option>Naver Blog</option></select><input type="text" id="socialTopic" placeholder="Topic..."><button class="btn btn-accent" onclick="window.generateAI('social')" data-en="Generate Posts" data-kr="포스트 생성">Generate Posts</button><div id="socialOutput" class="card" style="margin-top:12px;display:none;"></div></div>
+  <div class="page" id="page-chat"><h2 data-en="💬 AI Chat Reply" data-kr="💬 AI 채팅 응답">💬 AI Chat Reply</h2><img class="img-banner" src="https://images.unsplash.com/photo-1577563908411-5077b6dc7624?w=500&q=80" alt="Chat"><input type="text" id="chatQuery" placeholder="Customer question..."><button class="btn btn-accent" onclick="window.generateAI('chat')" data-en="Generate Reply" data-kr="응답 생성">Generate Reply</button><div id="chatOutput" class="card" style="margin-top:12px;display:none;"></div></div>
+
+  <!-- PRICING -->
+  <div class="page" id="page-pricing">
+    <h2 style="text-align:center;" data-en="Choose Plan" data-kr="플랜 선택">Choose Plan</h2>
+    <img class="img-banner" src="https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=500&q=80" alt="Plans">
+    <div class="pricing-card"><h3>Basic</h3><p style="font-size:1.8rem;font-weight:800;">₩50K</p><p data-en="Review Replies, 2 Posts" data-kr="리뷰 답변, 주 2회">Review Replies, 2 Posts</p><button class="btn btn-outline" onclick="window.selectPlan('basic')" data-en="Select" data-kr="선택">Select</button></div>
+    <div class="pricing-card"><h3>Pro</h3><p style="font-size:1.8rem;font-weight:800;">₩200K</p><p data-en="Review Replies, 4 Posts" data-kr="리뷰 답변, 주 4회">Review Replies, 4 Posts</p><button class="btn btn-outline" onclick="window.selectPlan('pro')" data-en="Select" data-kr="선택">Select</button></div>
+    <div class="pricing-card recommended"><span class="badge">🏆 COMING SOON</span><h3>Premium</h3><p style="font-size:1.8rem;font-weight:800;">₩250K</p><p data-en="All + KakaoTalk Chat" data-kr="전체 + 카카오톡 채팅">All + KakaoTalk Chat</p><p style="font-size:0.7rem;color:var(--accent);font-weight:600;">🚀 Launching Soon!</p></div>
+  </div>
+
+  <!-- ABOUT -->
+  <div class="page" id="page-about">
+    <h2 data-en="About Aidely" data-kr="Aidely 소개">About Aidely</h2>
+    <img class="img-banner" src="https://images.unsplash.com/photo-1553877522-43269d4ea984?w=500&q=80" alt="Team">
+    <div class="card"><p data-en="Aidely is an AI-powered platform helping Korean small businesses manage reviews, social media, and chat — all in one place." data-kr="Aidely는 한국 소상공인들이 리뷰, SNS, 채팅을 한 곳에서 관리하도록 돕는 AI 플랫폼입니다.">Aidely is an AI-powered platform helping Korean small businesses manage reviews, social media, and chat — all in one place.</p></div>
+    <div class="card"><h3 data-en="❓ Why It's Important" data-kr="❓ 왜 중요할까요?">❓ Why It's Important</h3><p data-en="Customers decide based on reviews and social presence. Aidely automates this — saving time, increasing revenue." data-kr="고객은 리뷰와 SNS로 결정합니다. Aidely는 이를 자동화하여 시간을 절약하고 수익을 늘립니다.">Customers decide based on reviews and social presence. Aidely automates this — saving time, increasing revenue.</p></div>
+    <div class="card"><h3 data-en="💎 What Makes Us Different" data-kr="💎 우리의 차별점">💎 What Makes Us Different</h3><p data-en="Unlike generic tools, Aidely is built specifically for Korean small businesses — combining reviews, social, and KakaoTalk in one simple app. No other platform does this." data-kr="일반 도구와 달리 Aidely는 한국 소상공인을 위해 특별히 제작되었습니다 — 리뷰, SNS, 카카오톡을 하나의 간단한 앱에 통합했습니다. 이런 플랫폼은 없습니다.">Unlike generic tools, Aidely is built specifically for Korean small businesses — combining reviews, social, and KakaoTalk in one simple app. No other platform does this.</p></div>
+    <h3 data-en="How to Use" data-kr="사용 방법">How to Use</h3>
+    <div class="step"><div class="step-num">1</div><div><strong data-en="Sign Up" data-kr="가입">Sign Up</strong><br><span data-en="Create free account." data-kr="무료 계정 만들기.">Create free account.</span></div></div>
+    <div class="step"><div class="step-num">2</div><div><strong data-en="Choose Plan" data-kr="플랜 선택">Choose Plan</strong><br><span data-en="Start free trial." data-kr="무료 체험 시작.">Start free trial.</span></div></div>
+    <div class="step"><div class="step-num">3</div><div><strong data-en="Use AI" data-kr="AI 사용">Use AI</strong><br><span data-en="Generate replies and posts." data-kr="답변과 게시물 생성.">Generate replies and posts.</span></div></div>
+  </div>
+
+  <!-- CONTACT -->
+  <div class="page" id="page-contact">
+    <h2 data-en="Contact Us" data-kr="문의하기">Contact Us</h2>
+    <img class="img-banner" src="https://images.unsplash.com/photo-1596526131083-e8c633c948d2?w=500&q=80" alt="Contact">
+    <div class="card"><p>📧 info.aidely@gmail.com</p><p data-en="📍 Seoul, South Korea" data-kr="📍 대한민국 서울">📍 Seoul, South Korea</p><input type="text" id="contactName" placeholder="Name / 이름"><input type="email" id="contactEmail" placeholder="Email / 이메일"><textarea id="contactMsg" placeholder="Message / 메시지"></textarea><button class="btn btn-accent" onclick="window.sendContact()" data-en="Send Message" data-kr="메시지 보내기">Send Message</button></div>
+  </div>
+
+  <!-- ADMIN PANEL -->
+  <div class="page" id="page-admin">
+    <h2>🛡️ Admin Panel</h2>
+    <div class="card"><h3>📊 Stats</h3><p id="adminTotalUsers">Loading...</p><p id="adminTotalBiz">Loading...</p></div>
+    <div class="card"><h3>🏪 Recent Businesses</h3><div id="adminBizList"></div></div>
+    <button class="btn btn-outline" onclick="window.logoutUser()">Logout</button>
+  </div>
+
+  <!-- BOTTOM NAV -->
+  <div class="bottom-nav">
+    <div class="bottom-nav-item active" data-page="home"><i class="fas fa-home"></i><span data-en="Home" data-kr="홈">Home</span></div>
+    <div class="bottom-nav-item" data-page="dashboard"><i class="fas fa-chart-pie"></i><span data-en="Dashboard" data-kr="대시보드">Dashboard</span></div>
+    <div class="bottom-nav-item" data-page="pricing"><i class="fas fa-tag"></i><span data-en="Plans" data-kr="플랜">Plans</span></div>
+    <div class="bottom-nav-item" data-page="about"><i class="fas fa-info-circle"></i><span data-en="About" data-kr="소개">About</span></div>
+    <div class="bottom-nav-item" data-page="contact"><i class="fas fa-envelope"></i><span data-en="Contact" data-kr="문의">Contact</span></div>
+  </div>
+  <footer><p>© 2026 Aidely. All rights reserved.</p></footer>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+  (function() {
+    const SUPABASE_URL = 'https://qglqdayhwbsrnkyillcl.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFnbHFkYXlod2Jzcm5reWlsbGNsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODIyMDMzNTgsImV4cCI6MjA5Nzc3OTM1OH0.9INUM5El_iDyEeKkfR6G4_FodWLAwXJlyPypzeZW1is';
+    const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    const ADMIN_EMAIL = 'info.aidely@gmail.com';
+    const EDGE_FUNCTION_URL = 'https://qglqdayhwbsrnkyillcl.supabase.co/functions/v1/Openai-proxy';
+
+    // Navigation
+    window.navigateTo = function(page) {
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+      document.getElementById('page-' + page)?.classList.add('active');
+      document.querySelectorAll('.bottom-nav-item').forEach(n => n.classList.remove('active'));
+      document.querySelector('[data-page="' + page + '"]')?.classList.add('active');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+    document.querySelectorAll('.bottom-nav-item').forEach(item => {
+      item.addEventListener('click', function() { window.navigateTo(this.dataset.page); });
+    });
+
+    // Auth
+    window.signupUser = async function() {
+      const { error } = await sb.auth.signUp({ email: document.getElementById('signupEmail').value, password: document.getElementById('signupPassword').value });
+      if (error) alert(error.message);
+      else { alert('Account created! Check your email.'); window.navigateTo('login'); }
+    };
+    window.loginUser = async function() {
+      const { data, error } = await sb.auth.signInWithPassword({ email: document.getElementById('loginEmail').value, password: document.getElementById('loginPassword').value });
+      if (error) alert(error.message);
+      else {
+        if (data.user.email === ADMIN_EMAIL) { window.navigateTo('admin'); window.loadAdminPanel(); }
+        else { document.getElementById('userEmailDisplay').textContent = '📊 Welcome, ' + data.user.email; window.navigateTo('dashboard'); setTimeout(() => window.checkBusiness(), 500); }
+      }
+    };
+    window.logoutUser = async function() { await sb.auth.signOut(); window.navigateTo('home'); };
+
+    // Business Registration
+    window.registerBusiness = async function() {
+      const { data: { user } } = await sb.auth.getUser();
+      if (!user) { alert('Please login first'); return; }
+      const bizName = document.getElementById('bizName').value.trim();
+      if (!bizName) { alert('Business name is required.'); return; }
+
+      const { data: existing } = await sb.from('businesses').select('id').eq('business_name', bizName).single();
+      if (existing) { alert('⚠️ This business is already registered.'); return; }
+
+      const { count } = await sb.from('businesses').select('*', { count: 'exact', head: true });
+      const isFirstFive = (count !== null && count < 5);
+      const userPlan = isFirstFive ? 'free' : 'trial';
+      const trialEndsAt = isFirstFive ? new Date(Date.now() + 30*24*60*60*1000).toISOString() : new Date(Date.now() + 3*24*60*60*1000).toISOString();
+
+      const { error } = await sb.from('businesses').insert({
+        user_id: user.id, business_name: bizName, business_email: document.getElementById('bizEmail').value,
+        business_type: document.getElementById('bizType').value, phone: document.getElementById('bizPhone').value,
+        location: document.getElementById('bizLocation').value, description: document.getElementById('bizDesc').value,
+        instagram: document.getElementById('bizInstagram').value, facebook: document.getElementById('bizFacebook').value,
+        naver: document.getElementById('bizNaver').value, plan: userPlan, trial_ends_at: trialEndsAt
+      });
+      if (error) alert(error.message);
+      else { alert('Business registered!'); window.navigateTo('dashboard'); window.checkBusiness(); }
+    };
+    window.checkBusiness = async function() {
+      const { data: { user } } = await sb.auth.getUser();
+      if (!user) return;
+      const { data } = await sb.from('businesses').select('*').eq('user_id', user.id).single();
+      if (data) { document.getElementById('registerPrompt').style.display = 'none'; document.getElementById('bizServices').style.display = 'block'; document.getElementById('bizInfoCard').style.display = 'block'; document.getElementById('bizNameDisplay').textContent = '🏪 ' + data.business_name; document.getElementById('bizPlanDisplay').textContent = '💳 Plan: ' + data.plan; if(data.trial_ends_at) document.getElementById('trialDisplay').textContent = '⏳ Trial ends: ' + new Date(data.trial_ends_at).toLocaleDateString(); }
+    };
+
+    // AI Generation (Edge Function)
+    window.generateAI = async function(type) {
+      const outDiv = document.getElementById(type + 'Output');
+      outDiv.style.display = 'block'; outDiv.textContent = '⏳ Generating...';
+      let prompt = '';
+      if (type === 'review') prompt = `You are a Korean business owner. Write a warm, professional reply in Korean and English. Review: "${document.getElementById('reviewInput').value || 'Great service!'}"`;
+      else if (type === 'social') prompt = `Write a ${document.getElementById('socialPlatform').value || 'Instagram'} post for a Korean business about ${document.getElementById('socialTopic').value || 'special offer'}. Engaging, emojis, Korean & English.`;
+      else if (type === 'chat') prompt = `You are a Korean customer service agent. Reply professionally in Korean & English. Query: "${document.getElementById('chatQuery').value || 'What time do you close?'}"`;
+      try {
+        const res = await fetch(EDGE_FUNCTION_URL, { method:'POST', headers:{ 'Content-Type':'application/json' }, body: JSON.stringify({ prompt }) });
+        const d = await res.json();
+        outDiv.textContent = d.choices?.[0]?.message?.content || '❌ Error. Try again.';
+      } catch(e) { outDiv.textContent = '❌ Network error.'; }
+    };
+
+    // Subscription (Paddle)
+    window.selectPlan = function(plan) {
+      const links = {
+        basic: 'https://buy.paddle.com/checkout?product_id=pro_01kvzjv6dg7k9t3m34brdpkfy0',
+        pro: 'https://buy.paddle.com/checkout?product_id=pro_01kvzjxmgkmavyzkzrcj20j1va',
+        premium: 'https://buy.paddle.com/checkout?product_id=pro_01kvzk0j94bf2aw5x6nqevrfnn'
+      };
+      window.open(links[plan], '_blank');
+    };
+
+    window.sendContact = () => alert('Message sent!');
+
+    window.loadAdminPanel = async function() {
+      const { data } = await sb.from('businesses').select('*');
+      document.getElementById('adminTotalUsers').textContent = 'Total Businesses: ' + (data?.length || 0);
+      document.getElementById('adminBizList').innerHTML = data?.map(u => `<p>🏪 ${u.business_name} (${u.plan})</p>`).join('') || 'No businesses yet.';
+    };
+
+    window.setLang = function(l) {
+      document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+      document.querySelector(`.lang-btn[onclick="window.setLang('${l}')"]`)?.classList.add('active');
+      document.querySelectorAll('[data-en][data-kr]').forEach(el => el.textContent = l==='kr' ? el.dataset.kr : el.dataset.en);
+    };
+
+    if (!window.matchMedia('(display-mode: standalone)').matches) document.getElementById('installBanner').style.display = 'flex';
+  })();
+</script>
+</body>
+</html>
