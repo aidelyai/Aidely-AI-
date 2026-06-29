@@ -515,13 +515,7 @@
       body: JSON.stringify({ prompt: prompt })
     });
     const d = await res.json();
-    if (d.choices && d.choices[0]) {
-      outDiv.textContent = d.choices[0].message.content;
-    } else if (d.error) {
-      outDiv.textContent = '❌ ' + d.error;
-    } else {
-      outDiv.textContent = '❌ Unexpected response. Try again.';
-    }
+    outDiv.textContent = d.reply || '❌ Error. Try again.';
   } catch(e) {
     outDiv.textContent = '❌ Network error: ' + e.message;
   }
