@@ -501,18 +501,31 @@
   };
 
   window.generateAI = async function(type) {
-    const outDiv = document.getElementById(type + 'Output');
-    outDiv.style.display = 'block'; outDiv.textContent = '⏳ Generating...';
-    let prompt = '';
-    if (type === 'review') prompt = `Write a professional reply in Korean and English. Review: "${document.getElementById('reviewInput').value || 'Great service!'}"`;
-    else if (type === 'social') prompt = `Write a ${document.getElementById('socialPlatform').value || 'Instagram'} post about ${document.getElementById('socialTopic').value || 'special offer'}. Korean & English.`;
-    else if (type === 'chat') prompt = `Reply professionally in Korean & English. Query: "${document.getElementById('chatQuery').value || 'What time do you close?'}"`;
-    try {
-      const res = await fetch(EDGE_FUNCTION_URL, { method:'POST', headers:{ 'Content-Type':'application/json' }, body: JSON.stringify({ prompt }) });
-      const d = await res.json();
-      outDiv.textContent = d.choices?.[0]?.message?.content || '❌ Error. Try again.';
-    } catch(e) { outDiv.textContent = '❌ Network error.'; }
-  };
+  const outDiv = document.getElementById(type + 'Output');
+  outDiv.style.display = 'block'; outDiv.textContent = '⏳ Generating...';
+  let prompt = '';
+  if (type === 'review') prompt = 'Write a professional reply in Korean and English. Review: "' + (document.getElementById('reviewInput').value || 'Great service!') + '"';
+  else if (type === 'social') prompt = 'Write a ' + (document.getElementById('socialPlatform').value || 'Instagram') + ' post about ' + (document.getElementById('socialTopic').value || 'special offer') + '. Korean & English.';
+  else if (type === 'chat') prompt = 'Reply professionally in Korean & English. Query: "' + (document.getElementById('chatQuery').value || 'What time do you close?') + '"';
+  
+  try {
+    const res = await fetch('https://qglqdayhwbsrnkyillcl.supabase.co/functions/v1/Openai-proxy', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ prompt: prompt })
+    });
+    const d = await res.json();
+    if (d.choices && d.choices[0]) {
+      outDiv.textContent = d.choices[0].message.content;
+    } else if (d.error) {
+      outDiv.textContent = '❌ ' + d.error;
+    } else {
+      outDiv.textContent = '❌ Unexpected response. Try again.';
+    }
+  } catch(e) {
+    outDiv.textContent = '❌ Network error: ' + e.message;
+  }
+};
 
   window.selectPlan = function(plan) {
     const links = { basic: 'https://buy.paddle.com/checkout?product_id=pro_01kvzjv6dg7k9t3m34brdpkfy0', pro: 'https://buy.paddle.com/checkout?product_id=pro_01kvzjxmgkmavyzkzrcj20j1va', premium: 'https://buy.paddle.com/checkout?product_id=pro_01kvzk0j94bf2aw5x6nqevrfnn' };
